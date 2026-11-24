@@ -154,11 +154,11 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 {
 const LS='scheda-ale-v1',LSD='scheda-ale-draft',LSB='scheda-ale-backup';
 const RAW=[
- [['c1','Chest press',90,8,10,9,''],['c2','Panca 30° bilanciere',90,8,8,9,''],['c3','Lat machine presa media',90,8,8,9,''],['c4','Low row singola',90,8,10,9,''],['c5','French press panca 30°',90,8,10,9,''],['c6','Curl panca 60°',90,8,10,9,'']],
+ [['c1','Chest press',90,8,10,9,''],['c2','Incline chest press',90,8,8,9,''],['c3','Lat machine presa stretta',90,8,8,9,''],['c4','Low row (peso per lato)',90,8,10,9,''],['c5','Push down corda',90,8,10,9,''],['c6','Curl a martello',90,8,10,9,'']],
  [['d1','Lat machine presa stretta',90,8,10,9,''],['d2','Pulley',-1,8,8,9,''],['d3','Spinte panca 45° manubri',90,8,10,9,''],['d4','Croci panca 30° manubri',90,10,12,9,''],['d5','Spider curl',60,10,12,9,'Sdraiato a pancia in giù su panca 30°'],['d6','Push down cavo alto',0,10,12,9,'Recupero non indicato in scheda']],
  [['e1','Leg curl alla leg extension',90,10,12,9,'In piedi, step sotto al piede'],['e2','Hip thrust machine',90,10,10,9,'Focus sulla contrazione dei glutei'],['e3','Squat bulgari',90,10,10,9,'10 per gamba'],['e4','Leg press',90,12,12,10,'@10 = a cedimento'],['e5','Spinte panca 60° manubri',90,8,8,9,''],['e6','Alzate laterali manubri',90,10,12,9,'In piedi o seduto, come preferisci']]
 ];
-const DAYS=RAW.map((l,i)=>({d:i+1,c:'g'+(i+1),ex:l.map(([id,n,rest,min,max,rpe,note])=>({id,n,rest,min,max,rpe,note,sets:4,db:/manubri|bulgari|spider|curl panca/i.test(n)}))}));
+const DAYS=RAW.map((l,i)=>({d:i+1,c:'g'+(i+1),ex:l.map(([id,n,rest,min,max,rpe,note])=>({id,n,rest,min,max,rpe,note,sets:4,db:/manubri|bulgari|spider|curl panca|martello/i.test(n)}))}));
 const EX={};DAYS.forEach(D=>D.ex.forEach(e=>{e.day=D;EX[e.id]=e}));
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

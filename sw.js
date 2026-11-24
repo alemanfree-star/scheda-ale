@@ -1,4 +1,4 @@
-const V='scheda-ale-v3';
+const V='scheda-ale-v4';
 const FCSS='https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap';
 const FILES=['./','index.html','manifest.webmanifest','apple-touch-icon.png','icon-192.png','icon-512.png','icon-maskable-512.png'];
 const FONT=/^https:\/\/fonts\.(googleapis|gstatic)\.com\//;
