@@ -1,4 +1,4 @@
-const V='scheda-ale-v1';
+const V='scheda-ale-v2';
 const FILES=['./','index.html','manifest.webmanifest','apple-touch-icon.png','icon-192.png','icon-512.png','icon-maskable-512.png'];
 const FONT=/^https:\/\/fonts\.(googleapis|gstatic)\.com\//;
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});

@@ -13,6 +13,7 @@
    TYPE Barlow Condensed 700 + Barlow
    LAYOUT colour header band: title left, block board right; cards in 2-3 columns; phone: one column, sticky save bar */
 :root{color-scheme:light dark;--bg:light-dark(#ffffff,#111213);--ink:light-dark(#151515,#f0efec);--mut:light-dark(#5f5f5b,#a6a5a0);--line:light-dark(#e3e2de,#2c2d30);--pan:light-dark(#f3f2ef,#1c1d20);--g1:light-dark(#d8232a,#ff5157);--g2:light-dark(#1d4ed8,#7393ff);--g3:light-dark(#f2b600,#ffc928);--up:light-dark(#0c8a44,#3fd27f);--dn:light-dark(#bf3324,#ff7c6c)}
+@supports not (color:light-dark(#000,#fff)){:root{--bg:#ffffff;--ink:#151515;--mut:#5f5f5b;--line:#e3e2de;--pan:#f3f2ef;--g1:#d8232a;--g2:#1d4ed8;--g3:#f2b600;--up:#0c8a44;--dn:#bf3324}@media(prefers-color-scheme:dark){:root{--bg:#111213;--ink:#f0efec;--mut:#a6a5a0;--line:#2c2d30;--pan:#1c1d20;--g1:#ff5157;--g2:#7393ff;--g3:#ffc928;--up:#3fd27f;--dn:#ff7c6c}}}
 :root[data-theme=light]{color-scheme:light}
 :root[data-theme=dark]{color-scheme:dark}
 html[data-v=g1]{--hd:var(--g1);--hf:#fff}
@@ -84,6 +85,9 @@ button.chip{cursor:pointer;min-height:34px;border:1.5px solid var(--line)}
 input,select,textarea{font:500 16px Barlow,sans-serif;min-height:46px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%}
 input::placeholder{color:color-mix(in srgb,var(--mut) 70%,transparent)}
 textarea{padding:10px;min-height:90px}
+input[inputmode],textarea{-webkit-appearance:none;appearance:none}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+input[type=date]{min-width:9.5em;line-height:44px}
 .mini{font:600 14px Barlow,sans-serif;background:none;border:0;color:var(--ink);text-decoration:underline;padding:8px 0;cursor:pointer;min-height:40px}
 .rules{border-top:1px solid var(--line);padding-top:26px;padding-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:18px 28px}
 .rules h4{font-size:21px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
@@ -94,6 +98,8 @@ textarea{padding:10px;min-height:90px}
 .sb label{display:grid;gap:2px;font-size:13px;font-weight:600}
 .sb input,.sb select{width:auto;border:0;min-height:44px}
 .sb .sp{flex:1;font-weight:600;align-self:center}
+.live{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.live .meta{margin:0;max-width:32em}
 .sb .btn{border-color:var(--bg);color:var(--bg)}
 .sb .btn.pri{background:var(--bg);color:var(--ink)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));gap:14px;padding:26px 0 20px}
@@ -139,7 +145,7 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 @media(max-width:820px){.pg{grid-template-columns:minmax(0,1fr)}}
 @media(min-width:821px){.chartbox{position:sticky;top:12px}}
 @media(max-width:700px){.top-in{grid-template-columns:minmax(0,1fr)}.hr{grid-template-columns:70px 42px minmax(0,1fr) auto}.hr .hw{display:none}}
-@media(max-width:600px){.tabs{gap:0}.tab{padding:10px 11px;font-size:15px}.tab .dot{display:none}.cell{height:34px;font-size:12px}.cell .dot{display:none}.kg{font-size:38px}.sb .sp{flex-basis:100%}}
+@media(max-width:600px){.sb{flex-wrap:nowrap;gap:8px;padding-top:10px;padding-bottom:10px}.sb .sp{display:none}.sb label:first-of-type{flex:1}.sb input[type=date]{width:100%;min-width:0}.hv{display:none}.tabs{gap:0}.tab{padding:10px 11px;font-size:15px}.tab .dot{display:none}.cell{height:34px;font-size:12px}.cell .dot{display:none}.kg{font-size:38px}.sb .sp{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){.top{transition:none}}
 </style></head>
 <body>
@@ -204,7 +210,7 @@ const card=(e,i,D)=>{const h=hist(e.id),L=h[h.length-1],P=h[h.length-2],sg=signa
  <p class="hint">${esc(sg.s)}</p>${logging&&logging.day===D.d?setsHTML(e):''}</article>`};
 const dayView=D=>{const ss=sorted().filter(s=>s.day===D.d),L=ss[ss.length-1];
  return`<section class="wrap"><div class="dayhead"><div><h2>Giorno ${D.d}</h2><p class="meta">${D.ex.length} esercizi · ${L?'ultima seduta '+fmtD(L.date)+', settimana '+L.week:'nessuna seduta ancora'}</p></div>
- ${logging&&logging.day===D.d?`<p class="meta">${logging.edit?'Stai modificando una seduta':'Seduta in corso: se il kg è uguale scrivi solo le ripetizioni'}</p>`:`<button class="btn pri" data-act="log" data-d="${D.d}" type="button">Registra seduta</button>`}</div>
+ ${logging&&logging.day===D.d?`<div class="live"><p class="meta">${logging.edit?'Stai modificando una seduta.':'Seduta in corso: se il kg è uguale scrivi solo le ripetizioni.'}</p><button class="btn" data-act="cancel" type="button">Annulla seduta</button></div>`:`<button class="btn pri" data-act="log" data-d="${D.d}" type="button">Registra seduta</button>`}</div>
  <div class="cards">${D.ex.map((e,i)=>card(e,i,D)).join('')}</div></section>
  <section class="wrap rules"><div><h4>Range di ripetizioni</h4><p>Con 8–10 scegli un carico che ti dia almeno 8 anche nella serie in cui sei più stanco. Quando chiudi tutte e 4 le serie a 10, aumenti.</p></div>
  <div><h4>Ripetizioni fisse</h4><p>Con 4 × 8 aumenti il carico ogni volta che riesci a chiudere tutte le serie.</p></div>
@@ -218,9 +224,9 @@ const progView=()=>{const all=Object.values(EX),H={};all.forEach(e=>H[e.id]=hist
  return`<section class="wrap"><div class="kpis"><div class="kpi"><b>${st.sessions.length}</b><span>sedute registrate</span></div><div class="kpi"><b>${fmtN(Math.round(tot/100)/10)} t</b><span>sollevate in totale</span></div><div class="kpi"><b>${grow}/${all.length}</b><span>esercizi con carico in salita</span></div><div class="kpi"><b>${ups}</b><span>pronti ad aumentare</span></div></div>
  <div class="pg"><div class="chartbox ${EX[sel].day.c}"><h2 id="ch-t"></h2><div class="fig"><svg id="big" role="img" aria-label="Andamento dei carichi"></svg></div><p class="legend">Linea piena: kg della serie più pesante di ogni seduta. Tratteggio: massimale stimato, cioè 1RM (One-Rep Max, il peso che alzeresti per una sola ripetizione), con la formula di Epley.</p></div>
  <div>${DAYS.map(D=>`<h3 class="lg"><i class="dot ${D.c}"></i>Giorno ${D.d}</h3>${D.ex.map(e=>{const h=H[e.id],f=h[0],l=h[h.length-1],d=f&&l?l.top-f.top:0;return`<button class="exr ${D.c}${sel===e.id?' sel':''}" data-ex="${e.id}" type="button"><span>${esc(e.n)}</span><span class="ev">${l?(h.length>1?fmtN(f.top)+' → ':'')+fmtN(l.top)+' kg':'—'}${h.length>1?`<span class="dl ${d>0?'pos':d<0?'neg':''}">${d>0?'+':''}${fmtN(d)}</span>`:''}</span>${spark(h)||'<span></span>'}</button>`}).join('')}`).join('')}</div></div>
- <h2>Storico sedute</h2><div class="hist">${sorted().reverse().map(s=>{const D=DAYS[s.day-1],vol=Object.values(s.sets).reduce((b,ss)=>b+ss.reduce((c,x)=>c+x[0]*x[1],0),0);return`<div class="hr ${D.c}"><span>${fmtD(s.date)}</span><span class="tag">G${s.day}</span><span class="hw">Sett. ${s.week}</span><span>${Object.keys(s.sets).length} esercizi · ${fmtN(Math.round(vol))} kg</span><span class="ha">${s.sample?'<em>esempio</em>':`<button data-edit="${esc(s.id)}" type="button">Modifica</button><button class="${pend===s.id?'warn':''}" data-del="${esc(s.id)}" type="button">${pend===s.id?'Conferma':'Elimina'}</button>`}</span></div>`}).join('')||'<p class="empty">Nessuna seduta.</p>'}</div>
+ <h2>Storico sedute</h2><div class="hist">${sorted().reverse().map(s=>{const D=DAYS[s.day-1],vol=Object.values(s.sets).reduce((b,ss)=>b+ss.reduce((c,x)=>c+x[0]*x[1],0),0);return`<div class="hr ${D.c}"><span>${fmtD(s.date)}</span><span class="tag">G${s.day}</span><span class="hw">Sett. ${s.week}</span><span>${Object.keys(s.sets).length} esercizi<span class="hv"> · ${fmtN(Math.round(vol))} kg</span></span><span class="ha">${s.sample?'<em>esempio</em>':`<button data-edit="${esc(s.id)}" type="button">Modifica</button><button class="${pend===s.id?'warn':''}" data-del="${esc(s.id)}" type="button">${pend===s.id?'Conferma':'Elimina'}</button>`}</span></div>`}).join('')||'<p class="empty">Nessuna seduta.</p>'}</div>
  <details><summary>Backup dei dati</summary><div class="bk"><p class="hint">I dati vivono solo su questo telefono: se cancelli l’app li perdi. Salva il backup nei File, in iCloud o mandatelo su WhatsApp. Per ripristinare scegli il file oppure incolla il testo e premi Importa.</p><div><button class="btn pri" data-act="dl" type="button">Salva backup</button><button class="btn" data-act="copy" type="button">Copia come testo</button></div><label class="hint" for="impf">File di backup</label><input type="file" id="impf" accept=".json,application/json,text/plain"><textarea id="imp" aria-label="Backup da importare" placeholder="…oppure incolla qui il testo del backup"></textarea><div><button class="btn" data-act="import" type="button">Importa</button></div></div></details></section>`};
-const saveBar=()=>{const D=DAYS[logging.day-1];return`<div class="savebar"><div class="wrap sb"><span class="sp">${logging.edit?'Modifica':'Seduta'} Giorno ${D.d}</span><label>Data<input type="date" id="f-date"></label><label>Settimana<select id="f-week">${[1,2,3,4].map(w=>`<option value="${w}">${w}</option>`).join('')}</select></label><button class="btn" data-act="cancel" type="button">Annulla</button><button class="btn pri" data-act="save" type="button">Salva</button></div></div>`};
+const saveBar=()=>{const D=DAYS[logging.day-1];return`<div class="savebar"><div class="wrap sb"><span class="sp">${logging.edit?'Modifica':'Seduta'} Giorno ${D.d}</span><label>Data<input type="date" id="f-date"></label><label>Settimana<select id="f-week">${[1,2,3,4].map(w=>`<option value="${w}">${w}</option>`).join('')}</select></label><button class="btn pri" data-act="save" type="button">Salva</button></div></div>`};
 const lastBk=()=>{try{return+localStorage.getItem(LSB)||0}catch(e){return 0}};
 const foot=()=>`<footer class="wrap foot">Le sedute sono salvate su questo telefono, anche senza connessione. ${lastBk()?'Ultimo backup: '+new Date(lastBk()).toLocaleDateString('it-IT',{day:'numeric',month:'short'})+'.':'Nessun backup ancora.'}</footer>`;
 const ro=new ResizeObserver(()=>drawBig());
@@ -241,8 +247,9 @@ const drawBig=()=>{const s=$('#big'),t=$('#ch-t');if(!s||!sel)return;const W=s.c
 const fill=()=>{for(const k in dv){const el=document.getElementById(k);if(el)el.value=dv[k]}};
 const saveDraft=()=>{try{logging?localStorage.setItem(LSD,JSON.stringify({logging,dv})):localStorage.removeItem(LSD)}catch(e){}};
 const render=()=>{const v=view(),D=v.startsWith('giorno-')?DAYS[+v.slice(-1)-1]:null;
- document.documentElement.dataset.v=D?D.c:'pr';{const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--hd').trim()||'#151515'}
+ document.documentElement.dataset.v=D?D.c:'pr';
  $('#root').innerHTML=header(v)+banner()+(D?dayView(D):progView())+foot()+(logging?saveBar():'');
+ {const m=document.querySelector('meta[name=theme-color]'),t=$('.top');if(m&&t)m.content=getComputedStyle(t).backgroundColor}
  if(logging)fill();ro.disconnect();const f=$('.fig');if(f){ro.observe(f);drawBig()}};
 const toast=m=>{const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)};
 const persist=m=>{st.savedAt=Date.now();try{localStorage.setItem(LS,JSON.stringify(st));toast(m)}catch(e){toast('Errore di salvataggio: fai un backup')}render()};
