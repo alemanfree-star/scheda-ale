@@ -63,6 +63,7 @@ h3{font-size:24px;flex:1;padding-top:2px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font:500 14px Barlow,sans-serif;padding:6px 10px;border-radius:8px;background:var(--pan);color:var(--ink);border:0;white-space:nowrap}
 button.chip{cursor:pointer;min-height:34px;border:1.5px solid var(--line)}
+.how{margin:0;font-size:15px;line-height:1.45}
 .note{margin:0;color:var(--mut);font-size:15px}
 .cm{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:end;padding-top:10px;border-top:1px solid var(--line)}
 .last{display:flex;flex-direction:column;gap:2px}
@@ -155,10 +156,11 @@ summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:
 const LS='scheda-ale-v1',LSD='scheda-ale-draft',LSB='scheda-ale-backup';
 const RAW=[
  [['c1','Chest press',90,8,10,9,''],['c2','Incline chest press',90,8,8,9,''],['c3','Lat machine presa stretta',90,8,8,9,''],['c4','Low row (peso per lato)',90,8,10,9,''],['c5','Push down corda',90,8,10,9,''],['c6','Curl a martello',90,8,10,9,'']],
- [['d1','Lat machine presa stretta',90,8,10,9,''],['d2','Pulley',-1,8,8,9,''],['d3','Spinte panca 45° manubri',90,8,10,9,''],['d4','Croci panca 30° manubri',90,10,12,9,''],['d5','Spider curl',60,10,12,9,'Sdraiato a pancia in giù su panca 30°'],['d6','Push down cavo alto',0,10,12,9,'Recupero non indicato in scheda']],
- [['e1','Leg curl alla leg extension',90,10,12,9,'In piedi, step sotto al piede'],['e2','Hip thrust machine',90,10,10,9,'Focus sulla contrazione dei glutei'],['e3','Squat bulgari',90,10,10,9,'10 per gamba'],['e4','Leg press',90,12,12,10,'@10 = a cedimento'],['e5','Spinte panca 60° manubri',90,8,8,9,''],['e6','Alzate laterali manubri',90,10,12,9,'In piedi o seduto, come preferisci']]
+ [['d1','Lat machine presa stretta',90,8,10,9,''],['d2','Pulley',-1,8,8,9,''],['d3','Spinte panca 45° manubri',90,8,10,9,''],['d4','Croci panca 30° manubri',90,10,12,9,''],['d5','Spider curl',60,10,12,9,''],['d6','Push down cavo alto',0,10,12,9,'Recupero non indicato in scheda']],
+ [['e1','Leg curl alla leg extension',90,10,12,9,''],['e2','Hip thrust machine',90,10,10,9,''],['e3','Squat bulgari',90,10,10,9,'10 per gamba'],['e4','Leg press',90,12,12,10,'@10 = a cedimento'],['e5','Spinte panca 60° manubri',90,8,8,9,''],['e6','Alzate laterali manubri',90,10,12,9,'In piedi o seduto, come preferisci']]
 ];
 const DAYS=RAW.map((l,i)=>({d:i+1,c:'g'+(i+1),ex:l.map(([id,n,rest,min,max,rpe,note])=>({id,n,rest,min,max,rpe,note,sets:4,db:/manubri|bulgari|spider|curl panca|martello/i.test(n)}))}));
+const HOW={"c1": "Schiena incollata allo schienale: spingi le maniglie avanti fino a braccia quasi tese, torna lento.", "c2": "Chest press con schienale inclinato: spingi in alto e avanti, scapole strette. Lavora il petto alto.", "c3": "Triangolo, petto in fuori: tira verso lo sterno portando i gomiti giù vicino ai fianchi.", "c4": "Petto sul supporto: tira le maniglie verso l'addome stringendo le scapole, senza strappi.", "c5": "Cavo alto, gomiti fermi ai fianchi: spingi giù fino a braccia tese aprendo la corda in fondo.", "c6": "Manubri con i palmi verso il corpo: piega i gomiti tenendoli fermi ai fianchi, senza dondolare.", "d1": "Triangolo, petto in fuori: tira verso lo sterno portando i gomiti giù vicino ai fianchi.", "d2": "Cavo basso con il triangolo, schiena dritta: tira verso l'addome stringendo le scapole.", "d3": "Panca a 45°: spingi i manubri dal petto verso l'alto fino a farli quasi toccare.", "d4": "Panca a 30°, gomiti appena piegati: chiudi le braccia ad arco sopra il petto, riapri lento.", "d5": "Pancia in giù sulla panca, braccia a penzoloni: curl senza muovere i gomiti, stringi in alto.", "d6": "Gomiti fermi ai fianchi: spingi giù fino a braccia tese, risali senza alzare i gomiti.", "e1": "Rullo dietro la caviglia, una gamba alla volta: porta il tallone verso il gluteo, torna lento.", "e2": "Schiena sul supporto, piedi larghi come le anche: spingi su il bacino e stringi i glutei 1 secondo.", "e3": "Piede dietro sulla panca: scendi col ginocchio dietro verso terra, risali spingendo sul tallone.", "e4": "Piedi larghi come le spalle: porta le ginocchia verso il petto, spingi senza bloccarle in fondo.", "e5": "Panca a 60°, manubri alle spalle: spingi sopra la testa. Lavora spalle e petto alto.", "e6": "Gomiti appena piegati: alza le braccia di lato fino all'altezza delle spalle, scendi lento."};
 const EX={};DAYS.forEach(D=>D.ex.forEach(e=>{e.day=D;EX[e.id]=e}));
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -205,7 +207,7 @@ const card=(e,i,D)=>{const h=hist(e.id),L=h[h.length-1],P=h[h.length-2],sg=signa
  const same=L&&L.ss.every(x=>x[0]===L.top);
  return`<article class="card ${D.c}"><div class="ct"><span class="no">${i+1}</span><h3>${esc(e.n)}</h3><span class="sig ${sg.k}">${esc(sg.t)}</span></div>
  <div class="chips"><span class="chip"><b>${repTxt(e)}</b></span><span class="chip">@${e.rpe}</span>${e.rest>0?`<button class="chip" data-rest="${e.rest}" type="button" aria-label="Avvia recupero">Recupero ${restTxt(e.rest)} ▸</button>`:`<span class="chip">Recupero ${restTxt(e.rest)}</span>`}</div>
- ${e.note?`<p class="note">${esc(e.note)}</p>`:''}
+ ${HOW[e.id]?`<p class="how">${esc(HOW[e.id])}</p>`:''}${e.note?`<p class="note">${esc(e.note)}</p>`:''}
  <div class="cm">${L?`<div class="last"><span class="kg">${fmtN(L.top)}<small> kg</small></span><span class="reps">${same?L.ss.map(x=>x[1]).join(' · ')+' rip':L.ss.map(x=>fmtN(x[0])+'×'+x[1]).join(' · ')}</span><span class="dl ${dl>0?'pos':dl<0?'neg':''}">${dl===null?'Ultima: '+fmtD(L.date):(dl>0?'+':'')+fmtN(dl)+' kg vs seduta prima'}</span></div>${spark(h)}`:`<p class="empty">Ancora nessuna seduta</p><span></span>`}</div>
  <p class="hint">${esc(sg.s)}</p>${logging&&logging.day===D.d?setsHTML(e):''}</article>`};
 const dayView=D=>{const ss=sorted().filter(s=>s.day===D.d),L=ss[ss.length-1];
