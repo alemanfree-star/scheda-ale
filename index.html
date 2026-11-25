@@ -277,7 +277,7 @@ const saveBike=()=>{const min=pmin(bv['b-min']);if(!(min>0)){toast('Inserisci al
  blog=null;bv={};saveDraft();persist(s?'Cyclette aggiornata':'Cyclette salvata')};
 const saveBar=()=>{const D=DAYS[logging.day-1];return`<div class="savebar"><div class="wrap sb"><span class="sp">${logging.edit?'Modifica':'Seduta'} Giorno ${D.d}</span><label>Data<input type="date" id="f-date"></label><label>Settimana<select id="f-week">${[1,2,3,4].map(w=>`<option value="${w}">${w}</option>`).join('')}</select></label><button class="btn pri" data-act="save" type="button">Salva</button></div></div>`};
 const lastBk=()=>{try{return+localStorage.getItem(LSB)||0}catch(e){return 0}};
-const foot=()=>`<footer class="wrap foot">Le sedute sono salvate su questo telefono, anche senza connessione. ${lastBk()?'Ultimo backup: '+new Date(lastBk()).toLocaleDateString('it-IT',{day:'numeric',month:'short'})+'.':'Nessun backup ancora.'} Versione 10.</footer>`;
+const foot=()=>`<footer class="wrap foot">Le sedute sono salvate su questo telefono, anche senza connessione. ${lastBk()?'Ultimo backup: '+new Date(lastBk()).toLocaleDateString('it-IT',{day:'numeric',month:'short'})+'.':'Nessun backup ancora.'} Versione 11.</footer>`;
 const ro=new ResizeObserver(()=>drawBig());
 const drawBig=()=>{const s=$('#big'),t=$('#ch-t');if(!s||!sel)return;const W=s.clientWidth,H=s.clientHeight,e=EX[sel],h=hist(sel);
  if(!h.length){t.textContent=e.n+': ancora nessun dato';s.innerHTML='';return}
@@ -347,7 +347,7 @@ const onIn=ev=>{const t=ev.target;if(!t.id)return;if(logging&&/^(k-|r-|f-)/.test
 document.addEventListener('input',onIn);document.addEventListener('change',onIn);
 addEventListener('hashchange',()=>{pend=null;render()});
 render();
-if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol==='https:'){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload()}});navigator.serviceWorker.register('sw.js').then(r=>{r.update();addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')r.update()})}).catch(()=>{})}
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 }
 </script>
